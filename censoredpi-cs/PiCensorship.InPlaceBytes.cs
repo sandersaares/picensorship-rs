@@ -37,7 +37,7 @@ partial class PiCensorship
 				remaining[..bytesInChunk].CopyTo(buffer);
 				remaining = remaining[bytesInChunk..];
 
-				censoredNumberCount += CensorSuffixSpan(buffer.AsMemory(..bytesInChunk), ref previous);
+				censoredNumberCount += CensorSuffixSpan(buffer.AsSpan(..bytesInChunk), ref previous);
 
 				await output.WriteAsync(buffer.AsMemory(..bytesInChunk), cancel);
 			}
@@ -50,7 +50,7 @@ partial class PiCensorship
 		return censoredNumberCount;
 	}
 
-	private static int CensorSuffixSpan(Memory<byte> suffix, ref byte previous)
+	private static int CensorSuffixSpan(Span<byte> suffix, ref byte previous)
 	{
 		// Business logic for consecutive suffix numbers:
 		// * if the number gets bigger, we allow it.
@@ -62,18 +62,16 @@ partial class PiCensorship
 		// We return how many numbers we censored.
 		var censoredNumberCount = 0;
 
-		var span = suffix.Span;
-
-		for (var i = 0; i < span.Length; i++)
+		for (var i = 0; i < suffix.Length; i++)
 		{
-			var c = span[i];
+			var c = suffix[i];
 			var isSmallerThanPrevious = c < previous;
 			previous = c;
 
 			if (isSmallerThanPrevious)
 			{
 				censoredNumberCount++;
-				span[i] = (byte)'*';
+                suffix[i] = (byte)'*';
 			}
 		}
 
