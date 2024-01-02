@@ -8,6 +8,32 @@ static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 const PI_50K: &str = include_str!("../../pi50k.txt");
 
 fn main() {
+    // Warmup.
+    _ = block_on(write_censored_digits_of_pi_inplace(
+        PI_50K,
+        futures::io::sink(),
+    )).unwrap();
+    _ = block_on(write_censored_digits_of_pi_inplace(
+        PI_50K,
+        futures::io::sink(),
+    )).unwrap();
+    _ = block_on(write_censored_digits_of_pi_inplace(
+        PI_50K,
+        futures::io::sink(),
+    )).unwrap();
+    _ = block_on(write_censored_digits_of_pi_iterative(
+        PI_50K,
+        futures::io::sink(),
+    )).unwrap();
+    _ = block_on(write_censored_digits_of_pi_iterative(
+        PI_50K,
+        futures::io::sink(),
+    )).unwrap();
+    _ = block_on(write_censored_digits_of_pi_iterative(
+        PI_50K,
+        futures::io::sink(),
+    )).unwrap();
+
     epoch::advance().unwrap();
 
     let allocated_start = stats::allocated::read().unwrap();
