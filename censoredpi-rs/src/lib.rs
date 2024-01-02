@@ -24,26 +24,26 @@ pub async fn write_censored_digits_of_pi_iterative(
 
     // We keep track of the previous number as a character and just ASCII-compare each one.
     // Start with zero (lowest value) to ensure the first number is allowed without special cases in algorithm.
-    let mut previous = '0';
+    let mut previous = b'0';
 
-    let censored_suffix = suffix_str
-        .chars()
+    let censored_suffix_bytes = suffix_str
+        .bytes()
         .map(|c| {
             let is_smaller_than_previous = c < previous;
             previous = c;
 
             if is_smaller_than_previous {
                 censored_count += 1;
-                '*'
+                b'*'
             } else {
                 c
             }
         })
-        .collect::<String>();
+        .collect::<Vec<_>>();
 
     output.write_all(prefix_str.as_bytes()).await?;
     output.write_all(".".as_bytes()).await?;
-    output.write_all(censored_suffix.as_bytes()).await?;
+    output.write_all(censored_suffix_bytes.as_slice()).await?;
 
     Ok(censored_count)
 }
