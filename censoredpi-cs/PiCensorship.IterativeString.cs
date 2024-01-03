@@ -15,8 +15,8 @@ public partial class PiCensorship
         // The 3. is always the same, so we can just write it out.
         var prefix = π[0..2];
 
-        // The long tail is what we actually censor.
-        var suffix = π[2..];
+        // The long tail of 14... is what we actually censor.
+        // We do not extract it to a variable here to avoid making a copy of the data.
 
         // Business logic for consecutive suffix numbers:
         // * if the number gets bigger, we allow it.
@@ -32,7 +32,8 @@ public partial class PiCensorship
         // Start with zero (lowest value) to ensure the first number is allowed without special cases in algorithm.
         char previous = '0';
 
-        var censoredSuffixChars = suffix.Select(c =>
+        // Skip the first two characters (the prefix).
+        var censoredSuffixChars = π.Skip(2).Select(c =>
         {
             var isSmallerThanPrevious = c < previous;
             previous = c;
