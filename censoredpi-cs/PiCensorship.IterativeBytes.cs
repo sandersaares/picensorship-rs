@@ -8,12 +8,6 @@ public partial class PiCensorship
     /// <returns>Count of censored digits.</returns>
     public static async ValueTask<int> IterativeWriteCensoredDigitsOfPiAsUtf8BytesAsync(byte[] π, Stream output, CancellationToken cancel)
     {
-        // The 3. is always the same, so we can just write it out.
-        var prefix = π[0..2];
-
-        // The long tail is what we actually censor.
-        var suffix = π[2..];
-
         // Business logic for consecutive suffix numbers:
         // * if the number gets bigger, we allow it.
         // * if the number is equal, we allow it.
@@ -28,7 +22,7 @@ public partial class PiCensorship
         // Start with zero (lowest value) to ensure the first number is allowed without special cases in algorithm.
         byte previous = (byte)'0';
 
-        var censoredSuffixChars = suffix.Select(c =>
+        var censoredSuffixChars = π.Skip(2).Select(c =>
         {
             var isSmallerThanPrevious = c < previous;
             previous = c;
@@ -43,7 +37,7 @@ public partial class PiCensorship
             return c;
         }).ToArray();
 
-        await output.WriteAsync(prefix, cancel);
+        await output.WriteAsync(π.AsMemory(0..2), cancel);
         await output.WriteAsync(censoredSuffixChars, cancel);
 
         return censoredNumberCount;

@@ -10,9 +10,6 @@ public partial class PiCensorship
     /// <returns>Count of censored digits.</returns>
     public static async ValueTask<int> IterativeStringWriteCensoredDigitsOfPiAsUtf8BytesAsync(string π, Stream output, CancellationToken cancel)
     {
-        // The 3. is always the same, so we can just write it out.
-        var prefix = π[0..2];
-
         // The long tail of 14... is what we actually censor.
         // We do not extract it to a variable here to avoid making a copy of the data.
 
@@ -46,7 +43,7 @@ public partial class PiCensorship
             return c;
         }).ToArray();
 
-        await output.WriteAsync(Encoding.UTF8.GetBytes(prefix), cancel);
+        await output.WriteAsync(Encoding.UTF8.GetBytes("3."), cancel);
         await output.WriteAsync(Encoding.UTF8.GetBytes(censoredSuffixChars), cancel);
 
         return censoredNumberCount;
