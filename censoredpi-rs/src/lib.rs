@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::Result;
 use futures::AsyncWriteExt;
 
 /// Censors any digit of Pi that is smaller than the previous digit, returning count of censored digits.
@@ -6,9 +6,8 @@ pub async fn write_censored_digits_of_pi_iterative(
     pi: &str,
     mut output: impl AsyncWriteExt + Unpin,
 ) -> Result<usize> {
-    let (prefix_str, suffix_str) = pi
-        .split_once('.')
-        .ok_or(anyhow!("π must be in the form of '3.14159...'"))?;
+    let prefix_str = &pi[0..2];
+    let suffix_str = &pi[2..];
 
     // The 3. in prefix_str is always the same, so we can just write it out.
     // The long tail in suffix_str is what we actually censor.
@@ -42,13 +41,12 @@ pub async fn write_censored_digits_of_pi_iterative(
         .collect::<Vec<_>>();
 
     output.write_all(prefix_str.as_bytes()).await?;
-    output.write_all(".".as_bytes()).await?;
     output.write_all(censored_suffix_bytes.as_slice()).await?;
 
     Ok(censored_count)
 }
 
-// We perform the in-place censorship in chunks of up to 4KB for parity with the C# implementation..
+// We perform the in-place censorship in chunks of up to 4KB for parity with the C# implementation.
 const CHUNK_SIZE: usize = 4096;
 
 /// Censors any digit of Pi that is smaller than the previous digit, returning count of censored digits.
@@ -56,10 +54,6 @@ pub async fn write_censored_digits_of_pi_inplace(
     pi: &str,
     mut output: impl AsyncWriteExt + Unpin,
 ) -> Result<usize> {
-    if !pi.starts_with("3.") {
-        bail!("π must start with '3.'");
-    }
-
     // We can directly emit the "3." prefix.
     output.write_all(pi[0..2].as_bytes()).await?;
 
