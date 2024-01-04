@@ -7,20 +7,20 @@ namespace CensoredPi;
 public partial class PiCensorship
 {
     [Benchmark]
-    public ValueTask<int> IterativeString()
+    public async Task IterativeString()
     {
-        return IterativeStringWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsString, Stream.Null, CancellationToken.None);
+        await IterativeStringWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsString, Stream.Null, CancellationToken.None);
     }
 
     [Benchmark]
-    public ValueTask<int> IterativeBytes()
+    public async Task IterativeBytes()
     {
-        return IterativeWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsUtf8, Stream.Null, CancellationToken.None);
+        await IterativeWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsUtf8, Stream.Null, CancellationToken.None);
     }
 
     [Benchmark(Baseline = true)]
-    public ValueTask<int> InPlaceBytes()
+    public async Task InPlaceBytes()
     {
-        return InPlaceWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsUtf8, Stream.Null, CancellationToken.None);
+        await InPlaceWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsUtf8, Stream.Null, CancellationToken.None);
     }
 }

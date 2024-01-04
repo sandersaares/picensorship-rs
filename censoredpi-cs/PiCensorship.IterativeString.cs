@@ -10,8 +10,6 @@ public partial class PiCensorship
     /// <returns>Count of censored digits.</returns>
     public static async ValueTask<int> IterativeStringWriteCensoredDigitsOfPiAsUtf8BytesAsync(string π, Stream output, CancellationToken cancel)
     {
-        ValidatePiLooksLikePi(π);
-
         // The 3. is always the same, so we can just write it out.
         var prefix = π[0..2];
 

@@ -10,8 +10,6 @@ partial class PiCensorship
 	/// <returns>Count of censored digits.</returns>
 	public static async ValueTask<int> InPlaceWriteCensoredDigitsOfPiAsUtf8BytesAsync(byte[] π, Stream output, CancellationToken cancel)
 	{
-		ValidatePiLooksLikePi(π);
-
 		// Emit the 3. prefix as it is always the same.
 		await output.WriteAsync(π.AsMemory(0..2), cancel);
 
