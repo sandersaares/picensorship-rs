@@ -60,16 +60,15 @@ partial class PiCensorship
 		// We return how many numbers we censored.
 		var censoredNumberCount = 0;
 
-		for (var i = 0; i < suffix.Length; i++)
+		foreach (ref var c in suffix)
 		{
-			var c = suffix[i];
 			var isSmallerThanPrevious = c < previous;
 			previous = c;
 
 			if (isSmallerThanPrevious)
 			{
 				censoredNumberCount++;
-                suffix[i] = (byte)'*';
+                c = (byte)'*';
 			}
 		}
 
