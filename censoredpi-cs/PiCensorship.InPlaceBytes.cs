@@ -26,18 +26,21 @@ partial class PiCensorship
 		byte previous = (byte)'0';
 
 		var buffer = ArrayPool<byte>.Shared.Rent(ChunkSize);
+		// We intentionally do not use more than the chunk size, even if we were given some,
+		// as the 4KB write limit is performance-critical with ASP.NET Core.
+		var effectiveBuffer = buffer.AsMemory(0..ChunkSize);
 
 		try
 		{
 			while (!remaining.IsEmpty)
 			{
 				var bytesInChunk = Math.Min(remaining.Length, ChunkSize);
-				remaining[..bytesInChunk].CopyTo(buffer);
+				remaining[..bytesInChunk].CopyTo(effectiveBuffer);
 				remaining = remaining[bytesInChunk..];
 
-				censoredNumberCount += CensorSuffixSpan(buffer.AsSpan(..bytesInChunk), ref previous);
+				censoredNumberCount += CensorSuffixSpan(effectiveBuffer[..bytesInChunk].Span, ref previous);
 
-				await output.WriteAsync(buffer.AsMemory(..bytesInChunk), cancel);
+				await output.WriteAsync(effectiveBuffer[..bytesInChunk], cancel);
 			}
 		}
 		finally
