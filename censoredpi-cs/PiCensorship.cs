@@ -24,4 +24,10 @@ public partial class PiCensorship
     {
         await InPlaceWriteCensoredDigitsOfPiAsUtf8BytesAsync(DigitsOfPi.Pi50KAsUtf8, Stream.Null, CancellationToken.None);
     }
+
+    [Benchmark]
+    public void InPlaceBytesSync()
+    {
+        InPlaceWriteCensoredDigitsOfPiAsUtf8Bytes(DigitsOfPi.Pi50KAsUtf8, Stream.Null);
+    }
 }
