@@ -3,6 +3,7 @@
 namespace CensoredPi;
 
 [MemoryDiagnoser]
+//[DisassemblyDiagnoser(maxDepth: 4)]
 //[EventPipeProfiler(BenchmarkDotNet.Diagnosers.EventPipeProfile.GcVerbose)]
 public partial class PiCensorship
 {
